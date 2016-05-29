@@ -1,0 +1,45 @@
+#!/bin/bash
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install Caddy"
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+VENDOR_DIR="$BUILD_DIR/vendor"
+INSTALL_DIR="$VENDOR_DIR/caddy"
+CACHE_FILE="$CACHE_DIR/caddy"
+
+if [ ! -f $CACHE_FILE ]; then
+  # Install caddy
+  CADDY_REPO="${CADDY_REPO:-mholt/caddy}"
+  CADDY_VERSION="${CADDY_VERSION:-0.8.3}"
+  CADDY_FILE="caddy_linux_amd64.tar.gz"
+  CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_FILE"
+
+  echo "-----> Downloading Caddy"
+  wget $CADDY_URL -P $BUILD_DIR | indent
+
+  echo "-----> Extracting Caddy"
+  if [ ! -f $BUILD_DIR/$CADDY_FILE ]; then
+    echo "Error: Unable to download Caddy" | indent
+    ls $BUILD_DIR | indent
+    exit 1;
+  fi
+  tar xvf $BUILD_DIR/$CADDY_FILE | indent
+
+  echo "-----> Caching Caddy"
+  mv caddy $CACHE_FILE
+else
+  echo "-----> Using cached copy of Caddy"
+fi
+
+mkdir -p $INSTALL_DIR
+cp $CACHE_FILE $INSTALL_DIR
+
+echo "-----> Updating environment variables"
+PROFILE_PATH="$BUILD_DIR/.profile.d/caddy.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo "export PATH=$INSTALL_DIR:\$PATH" >> $PROFILE_PATH
