@@ -16,8 +16,8 @@ if [ ! -f $CACHE_FILE ]; then
   # Install caddy
   CADDY_REPO="${CADDY_REPO:-mholt/caddy}"
   CADDY_VERSION="${CADDY_VERSION:-0.8.3}"
-  CADDY_FILE="caddy_linux_amd64.tar.gz"
-  CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_FILE"
+  CADDY_FILE="caddy_linux_amd64"
+  CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_FILE.tar.gz"
 
   echo "-----> Downloading Caddy"
   wget $CADDY_URL -P $BUILD_DIR | indent
@@ -31,7 +31,7 @@ if [ ! -f $CACHE_FILE ]; then
   tar xvf $BUILD_DIR/$CADDY_FILE | indent
 
   echo "-----> Caching Caddy"
-  mv caddy $CACHE_FILE
+  mv $CADDY_FILE $CACHE_FILE
 else
   echo "-----> Using cached copy of Caddy"
 fi
