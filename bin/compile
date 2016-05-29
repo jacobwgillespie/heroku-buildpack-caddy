@@ -11,27 +11,31 @@ CACHE_DIR=$2
 VENDOR_DIR="$BUILD_DIR/vendor"
 INSTALL_DIR="$VENDOR_DIR/caddy"
 CACHE_FILE="$CACHE_DIR/caddy"
+CADDY_EXTRACT_DIR="$INSTALL_DIR/extract"
 
 if [ ! -f $CACHE_FILE ]; then
   # Install caddy
   CADDY_REPO="${CADDY_REPO:-mholt/caddy}"
   CADDY_VERSION="${CADDY_VERSION:-0.8.3}"
   CADDY_FILE="caddy_linux_amd64"
-  CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_FILE.tar.gz"
+  CADDY_ARCHIVE="$CADDY_FILE.tar.gz"
+  CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_ARCHIVE"
 
   echo "-----> Downloading Caddy"
   wget $CADDY_URL -P $BUILD_DIR | indent
 
   echo "-----> Extracting Caddy"
-  if [ ! -f $BUILD_DIR/$CADDY_FILE ]; then
+  if [ ! -f $BUILD_DIR/$CADDY_ARCHIVE ]; then
     echo "Error: Unable to download Caddy" | indent
     ls $BUILD_DIR | indent
     exit 1;
   fi
-  tar xvf $BUILD_DIR/$CADDY_FILE | indent
+  mkdir -p $CADDY_EXTRACT_DIR
+  tar xvf $BUILD_DIR/$CADDY_ARCHIVE -C $CADDY_EXTRACT_DIR | indent
 
   echo "-----> Caching Caddy"
-  mv $CADDY_FILE $CACHE_FILE
+  mv $CADDY_EXTRACT_DIR/$CADDY_FILE $CACHE_FILE
+  rm -rf $CADDY_EXTRACT_DIR
 else
   echo "-----> Using cached copy of Caddy"
 fi
