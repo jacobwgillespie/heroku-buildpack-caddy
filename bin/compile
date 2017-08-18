@@ -17,8 +17,8 @@ if [ ! -f $CACHE_FILE ]; then
   # Install caddy
   CADDY_REPO="${CADDY_REPO:-mholt/caddy}"
   CADDY_VERSION="${CADDY_VERSION:-0.10.6}"
-  CADDY_FILE="caddy_v${CADDY_VERSION}_linux_amd64"
-  CADDY_ARCHIVE="$CADDY_FILE.tar.gz"
+  CADDY_FILE="caddy"
+  CADDY_ARCHIVE="caddy_v${CADDY_VERSION}_linux_amd64.tar.gz"
   CADDY_URL="https://github.com/$CADDY_REPO/releases/download/v$CADDY_VERSION/$CADDY_ARCHIVE"
 
   echo "-----> Downloading Caddy"
